@@ -1,0 +1,5 @@
+raw_path='/home/bradley/oak/bjedelma/US_IMAGING/MRI/20190221_125505_Gie_Brad_anat_1_3/'; 
+func_ids={[3,4,5]}; 
+for kk=cell2mat(func_ids)
+        Bruker2Nifti(raw_path,int2str(kk),1)
+end
