@@ -7,7 +7,7 @@ elseif ispc
     slash = '\';
 end
 cd(Dir)
-addpath(genpath([Dir 'Preprocessing' slash]));
+% addpath(genpath([Dir 'Preprocessing' slash]));
 storage = [Dir 'Data_Processed' slash 'fMRI' slash]; if ~exist(storage,'dir'); mkdir(storage); end
 % fmri_fold = [Dir 'fMRI' slash 'ofMRI_pre_CW' slash];
 addpath(genpath(storage));

@@ -375,15 +375,13 @@ title('raw noise Z')
 
 subplot(2,1,2);
 boxplot(abs(D),Dl);
+set(gca,'xticklabel',{'0.1' '0.5' '1.0'})
 hold on
 Xr = ones(size(D)).*(1+(rand(size(D))-0.5)/10);
 Xr(:,2) = Xr(:,2) + 1; Xr(:,3) = Xr(:,3) + 2;
 scatter(Xr(:),abs(D(:)),'r','filled')
-set(gca,'xticklabel',{'0.1' '0.5' '1.0'},'ylim',[-1 10])
 title('abs noise Z')
-figure(h27); supertitle('Noise Z score')
 saveas(h27,[storage descr '_NOISE_Z.fig']);
-saveas(h27,[storage descr '_NOISE_Z.svg']);
 
 %%
 % figure;

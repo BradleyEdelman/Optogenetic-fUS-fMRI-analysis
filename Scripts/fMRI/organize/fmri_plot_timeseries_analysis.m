@@ -57,7 +57,7 @@ for i_stim = 1:size(stim,2)
             
              % Plot peak time series voxel-wise for ROIs
             if contains(['RM1' 'LM1'] ,fmriroi{i_roi})
-                tmp = nanmean(cell2mat(tsnormaveZ),2);
+                tmp = nanmean(cell2mat(tsnormavepeak),2);
                 tmp = reshape(tmp,[size(grp_data,1) size(grp_data,2)]);
                 tmp2 = zeros(size(grp_data,1),size(grp_data,2));
                 tmp2(pts{i_roi,1}) = tmp(pts{i_roi,1});
@@ -70,6 +70,10 @@ for i_stim = 1:size(stim,2)
         end
         
     end
+    
+    % Plot noise z-score
+    NOISE_Z{i_stim} = cell2mat(tsnormaveZ_noise(end,:));
+    
 end
 figure(h1); supertitle('ROI time series: Intensity')
 saveas(h1,[storage descr '_ROI_TS_fMRI.svg']);
@@ -78,3 +82,30 @@ saveas(h1,[storage descr '_ROI_TS_fMRI.fig']);
 figure(h2); title('RM1 Full Timeseries')
 saveas(h2,[storage descr '_RM1_Full_Timeseries_fMRI.svg']);
 saveas(h2,[storage descr '_RM1_Full_Timeseries_fMRI.fig']);
+
+% PLOT NOISE ROI Z-SCORE INFO
+h27 = figure;
+subplot(2,1,1);
+D = [NOISE_Z{1}' NOISE_Z{2}' NOISE_Z{3}'];
+Dl = [repmat('1',size(D,1),1);...
+    repmat('2',size(D,1),1);...
+    repmat('3',size(D,1),1)];
+boxplot(D,Dl);
+set(gca,'xticklabel',{'0.1' '0.5' '1.0'})
+hold on
+Xr = ones(size(D)).*(1+(rand(size(D))-0.5)/10);
+Xr(:,2) = Xr(:,2) + 1; Xr(:,3) = Xr(:,3) + 2;
+scatter(Xr(:),D(:),'r','filled')
+title('raw noise Z')
+
+subplot(2,1,2);
+boxplot(abs(D),Dl);
+hold on
+Xr = ones(size(D)).*(1+(rand(size(D))-0.5)/10);
+Xr(:,2) = Xr(:,2) + 1; Xr(:,3) = Xr(:,3) + 2;
+scatter(Xr(:),abs(D(:)),'r','filled')
+set(gca,'xticklabel',{'0.1' '0.5' '1.0'},'ylim',[-1 10])
+title('abs noise Z')
+figure(h27); supertitle('Noise Z score')
+saveas(h27,[storage descr '_NOISE_Z.fig']);
+saveas(h27,[storage descr '_NOISE_Z.svg']);
