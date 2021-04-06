@@ -200,7 +200,8 @@ elseif ispc
     slash = '\';
 end
 cd(Dir)
-addpath(genpath([Dir 'Preprocessing' slash]));
+% addpath(genpath([Dir 'Preprocessing' slash]));
+addpath(genpath('C:\Users\bedelman\Documents\GitHub\ofUSI\'))
 storage = [Dir 'Data_Processed' slash 'fMRI' slash]; if ~exist(storage,'dir'); mkdir(storage); end
 % fmri_fold = [Dir 'fMRI' slash 'ofMRI_pre_CW' slash];
 addpath(genpath(storage));
@@ -243,16 +244,16 @@ fmriroi = {'LCPu' 'LS1Dz' 'LS1FL' 'LS1HL' 'LM1' 'LS2' 'LM2' 'LCg1' 'LCg2' 'LS1BF
 % fmriroi = {'LCPu' 'LS1Dz' 'LS1FL' 'LS1HL' 'LM1' 'LS2' 'LM2' 'LCg1' 'LCg2' 'LS1BF'...
 %     'RCg1' 'RCg2' 'RM2' 'RM1' 'RCPu' 'RS1HL' 'RS1FL' 'RS1Dz' 'RS1BF' 'RS2'};
 % 
-base_fold = {'20191108_083343_BEd_preCW_4346075_N_D5_1_47';
-    '20191111_220250_BEd_preCW_4364123_R1_D2_2_1_57'; 
-    '20191111_151047_BEd_preCW_4364122_N_D2_1_53';
-    '20191108_143147_BEd_preCW_4364124_R1_D1_1_51';
-    }; param.sliceidx = 10; param.maxt = 40; param.descr = 'ephys';
-atmp = [storage '20191108' slash 'BEd_preCW_4346075_N_D5_1_47' slash '16a' slash 'ave_anatomy.nii'];
-mtmp = [storage '20191108' slash 'BEd_preCW_4346075_N_D5_1_47' slash '16a' slash 'ave_anatomy_mask.nii'];
-roifolder = [storage(1:end-5) 'segment_ofUS' slash 'fmri_pre_20191205' slash];
-fmriroi = {'LCPu' 'LS1Dz' 'LS1FL' 'LS1HL' 'LM1' 'LS2' 'LM2' 'LCg1' 'LCg2' 'LS1BF'...
-    'RCg1' 'RCg2' 'RM2' 'RM1' 'RCPu' 'RS1HL' 'RS1FL' 'RS1Dz' 'RS1BF' 'RS2'};
+% base_fold = {'20191108_083343_BEd_preCW_4346075_N_D5_1_47';
+%     '20191111_220250_BEd_preCW_4364123_R1_D2_2_1_57'; 
+%     '20191111_151047_BEd_preCW_4364122_N_D2_1_53';
+%     '20191108_143147_BEd_preCW_4364124_R1_D1_1_51';
+%     }; param.sliceidx = 10; param.maxt = 40; param.descr = 'ephys';
+% atmp = [storage '20191108' slash 'BEd_preCW_4346075_N_D5_1_47' slash '16a' slash 'ave_anatomy.nii'];
+% mtmp = [storage '20191108' slash 'BEd_preCW_4346075_N_D5_1_47' slash '16a' slash 'ave_anatomy_mask.nii'];
+% roifolder = [storage(1:end-5) 'segment_ofUS' slash 'fmri_pre_20191205' slash];
+% fmriroi = {'LCPu' 'LS1Dz' 'LS1FL' 'LS1HL' 'LM1' 'LS2' 'LM2' 'LCg1' 'LCg2' 'LS1BF'...
+%     'RCg1' 'RCg2' 'RM2' 'RM1' 'RCPu' 'RS1HL' 'RS1FL' 'RS1Dz' 'RS1BF' 'RS2'};
 
 % base_fold = {'20200210_161222_BEd_preCW_4419409_N_1_1_63';
 %     '20200211_090028_BEd_preCW_4419410_N_1_1_64';

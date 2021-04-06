@@ -46,6 +46,14 @@ for i_stim = 1:size(stim,2)
                     veloc_roi{i_roi,i_mouse} = Fcds.veloc(pts{i_roi,i_mouse});
                     if i_stim == 1 && i_roi == 1
                         figure; imagesc(Fcds.veloc)
+                        map = Fcds.signed;
+                        map(map<=0) = 0; map(map>0)=1;
+                        figure; imagesc(map)
+                        cmap = ([1 1 1;60/255 72/255 142/255]); colormap(cmap)
+                        map = Fc.signed;
+                        map(map>0) = 0; map(map<0)=1;
+                        figure; imagesc(map)
+                        cmap = ([1 1 1;205/255 32/255 41/255]); colormap(cmap)
                     end
                     
                     % Pos vs Neg flow: Total

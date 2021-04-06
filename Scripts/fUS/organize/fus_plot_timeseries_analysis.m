@@ -29,6 +29,7 @@ StatAUC(2:1+size(base_fold,1)*3,5) = num2cell(repmat([1;2;3],size(base_fold,1),1
 StatAUC(2+size(base_fold,1)*3:1+size(base_fold,1)*6,5) = num2cell(repmat([4;5;6],size(base_fold,1),1));
 StatPk = StatAUC; StatCt = StatAUC;
 
+SingleROI = 'LCPu';
 for i_stim = 1:size(stim,2)
     
     stim_storage = [storage stim{i_stim} slash descr slash];
@@ -59,7 +60,7 @@ for i_stim = 1:size(stim,2)
             title(fusroi{i_roi})
             
             % Full timeseries for local stimulation site
-            if strcmp(fusroi{i_roi},'RM1')
+            if strcmp(fusroi{i_roi},SingleROI)
                 figure(h8); hold on
                 if isequal(i_stim,3)
                     start = [30 69 108 147 186];
@@ -79,6 +80,7 @@ for i_stim = 1:size(stim,2)
                 tmp = tmp - repmat(mean(ts1(1:10)),[size(tmp,1) size(tmp,2)]); 
                 
                 stdshade(tmp,0.25,stimC(i_stim,:))
+                set(gca,'ylim', [-40 100]);
 %                 plot(ts2,'color',stimC(i_stim,:),'linewidth',2)
             end
             
@@ -169,6 +171,7 @@ for i_stim = 1:size(stim,2)
     
     % Plot noise z-score
     NOISE_Z{i_stim} = cell2mat(tsnormaveZ_noise(end,:));
+    ROI_Z{i_stim} = tsnormaveZ_roi;
     
 end
 figure(h1); supertitle('ROI time series: Intensity')
@@ -182,6 +185,10 @@ saveas(h2,[storage descr '_Artery_TS.fig']);
 figure(h3); supertitle('Venule time series: Intensity')
 saveas(h3,[storage descr '_Venule_TS.svg']);
 saveas(h3,[storage descr '_Venule_TS.fig']);
+
+figure(h8); title('RM1 Full Timeseries')
+saveas(h8,[storage descr '_' SingleROI '_Full_Timeseries_fUSI.svg']);
+saveas(h8,[storage descr '_' SingleROI 'RM1_Full_Timeseries_fUSI.fig']);
 
 if isunix
     Tvasauc = ['/home/bradley/Dropbox/fUSI_Vascular_AUC_' descr '.txt'];
@@ -273,6 +280,7 @@ for i_roi = 1:20
     set(gca,'ylim',[0 M],'xtick',[1 2],'xticklabel',{'art' 'ven'});
     title(fusroi{i_roi})
     
+    
 end
 figure(h5); supertitle('Arteriole vs Venule AUC: Intensity')
 saveas(h5,[storage descr '_Art_vs_Ven_AUC.svg']);
@@ -285,11 +293,6 @@ saveas(h6,[storage descr '_Art_vs_Ven_peak.fig']);
 figure(h7); supertitle('Arteriole vs Venule Pixel Count: Intensity')
 saveas(h7,[storage descr '_Art_vs_Ven_Ct.svg']);
 saveas(h7,[storage descr '_Art_vs_Ven_Ct.fig']);
-
-figure(h8); title('RM1 Full Timeseries')
-saveas(h8,[storage descr '_RM1_Full_Timeseries_fUSI.svg']);
-saveas(h8,[storage descr '_RM1_Full_Timeseries_fUSI.fig']);
-
 
 % same as above but boxplots with data points
 h9 = figure(9); h10 = figure(10);
@@ -332,23 +335,47 @@ for i_roi = 1:20
     cellsz5 = cell2mat(cellfun(@size,CT_neg_tot{2}(i_roi,:),'uni',false));
     cellsz6 = cell2mat(cellfun(@size,CT_neg_tot{3}(i_roi,:),'uni',false));
     
-    D = [cellsz1(1:2:end)',cellsz2(1:2:end)',cellsz3(1:2:end)',...
+    D11 = [cellsz1(1:2:end)',cellsz2(1:2:end)',cellsz3(1:2:end)',...
         zeros(num_an,1),...
         cellsz4(1:2:end)',cellsz5(1:2:end)',cellsz6(1:2:end)'];
-    Dl = [repmat('1',num_an,1); repmat('2',num_an,1);...
+    Dl2 = [repmat('1',num_an,1); repmat('2',num_an,1);...
         repmat('3',num_an,1); repmat('4',num_an,1);...
         repmat('5',num_an,1); repmat('6',num_an,1);...
         repmat('7',num_an,1)];
     cla
-    boxplot(D,Dl); hold on
+    boxplot(D11,Dl2); hold on
     set(gca,'xticklabel',{'0.1' '0.5' '1.0' '0' '0.1' '0.5' '1.0'})
-    Xr = ones(size(D)).*(1+(rand(size(D))-0.5)/5);
+    Xr = ones(size(D11)).*(1+(rand(size(D11))-0.5)/5);
     Xr(:,2) = Xr(:,2) + 1; Xr(:,3) = Xr(:,3) + 2;
     Xr(:,4) = Xr(:,4) + 3; Xr(:,5) = Xr(:,5) + 4;
     Xr(:,6) = Xr(:,6) + 5; Xr(:,7) = Xr(:,7) + 6;
-    scatter(Xr(1:num_an*4),D(1:num_an*4),5,'r','filled')
-    scatter(Xr(num_an*4+1:end),D(num_an*4+1:end),5,'b','filled')
+    scatter(Xr(1:num_an*4),D11(1:num_an*4),5,'r','filled')
+    scatter(Xr(num_an*4+1:end),D11(num_an*4+1:end),5,'b','filled')
     title(fusroi{i_roi})
+    
+    % Plot peak time series voxel-wise for ROIs
+    if contains(['RM1' 'LM1' 'RCPu' 'LCPu'] ,fusroi{i_roi})
+        f1 = figure;
+        subplot(1,2,1); boxplot(D,Dl);
+        set(gca,'xticklabel',{'0.1P' '0.5' '1.0' '0' '0.1' '0.5' '1.0'})
+        title('AUC')
+        if contains(['RM1', 'LM1'], fusroi{i_roi})
+            set(gca,'ylim',[0 3500]);
+        else
+            set(gca,'ylim',[0 1500]);
+        end
+        
+        subplot(1,2,2); boxplot(D11,Dl2);
+        set(gca,'xticklabel',{'0.1N' '0.5' '1.0' '0' '0.1' '0.5' '1.0'})
+        title('Count')
+        if contains(['RM1', 'LM1'], fusroi{i_roi})
+            set(gca,'ylim',[0 150]);
+        else
+            set(gca,'ylim',[0 475]);
+        end
+        
+        saveas(f1,[storage descr '_AUC_box_' fusroi{i_roi} '.svg']);
+    end    
     
 end
 figure(h9); supertitle('Arteriole vs Venule AUC: Boxplots')
@@ -358,6 +385,36 @@ figure(h10); supertitle('Arteriole vs Venule Act Count: Boxplots')
 saveas(h10,[storage descr '_CT_box.svg']);
 saveas(h10,[storage descr '_CT_box.fig']);
 
+%% ROI Z SCORES
+
+roi_int = [];
+roi_int = [roi_int find(contains(fusroi, 'RM1'))];
+roi_int = [roi_int find(contains(fusroi, 'LM1'))];
+roi_int = [roi_int find(contains(fusroi, 'RCPu'))];
+roi_int = [roi_int find(contains(fusroi, 'LCPu'))];
+
+for i = 1:3
+    ROIZ(:,:,i) = cell2mat(ROI_Z{i});
+end
+
+f = figure(62);
+num_an = size(tsnorm_roi,2);
+for i_roi = 1:size(roi_int,2)
+    subplot(2,2,i_roi)
+    % Plot Z score for ROI
+    D = ROIZ(roi_int(i_roi),:,:);
+    D = reshape(D,[],1);
+    Dl = [repmat('1',num_an,1);...
+        repmat('2',num_an,1);...
+        repmat('3',num_an,1)];
+    boxplot(D,Dl);
+    set(gca,'xticklabel',{'0.1' '0.5' '1.0'},'ylim',[-10 35])
+    title(fusroi{roi_int(i_roi)})
+end
+saveas(f,[storage descr '_ROI_CIRCUIT_Z.fig']);
+saveas(f,[storage descr '_ROI_CIRCUIT_Z.svg']);
+
+%% NOISE Z SCORES
 % PLOT NOISE ROI Z-SCORE INFO
 h27 = figure;
 subplot(2,1,1);

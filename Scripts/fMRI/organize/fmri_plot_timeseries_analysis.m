@@ -9,6 +9,8 @@ descr = param.descr;
 h1 = figure(1); clf
 h2 = figure(2); clf
 
+SingleROI = 'RCPu';
+
 for i_stim = 1:size(stim,2)
     
     stim_storage = [storage stim{i_stim} slash descr slash];
@@ -33,7 +35,7 @@ for i_stim = 1:size(stim,2)
             title(fmriroi{i_roi})
             
             % Full timeseries for local stimulation site
-            if strcmp(fmriroi{i_roi},'RM1')
+            if strcmp(fmriroi{i_roi},SingleROI)
                 figure(h2); hold on
                 if isequal(i_stim,1)
                     start = [30 70 110 150 190];
@@ -48,10 +50,11 @@ for i_stim = 1:size(stim,2)
                 ts2 = ts1 - mean(ts1(1:10));
                 
                 tmp = vertcat(tsnorm_roi{i_roi,:});
-                tmp = tmp - repmat(mean(ts,2),[size(tmp,1) size(tmp,2)]);
-                tmp = tmp - repmat(mean(ts1(1:10)),[size(tmp,1) size(tmp,2)]); 
+                tmp = tmp - repmat(mean(mean(tmp,2),1),[size(tmp,1) size(tmp,2)]);
+                tmp = tmp - repmat(mean(mean(tmp(1:10)),1),[size(tmp,1) size(tmp,2)]); 
                 
                 stdshade(tmp,0.25,stimC(i_stim,:))
+                set(gca,'ylim',[-0.5 1])
 %                 plot(ts,'color',stimC(i_stim,:),'linewidth',2)
             end
             
@@ -73,16 +76,48 @@ for i_stim = 1:size(stim,2)
     
     % Plot noise z-score
     NOISE_Z{i_stim} = cell2mat(tsnormaveZ_noise(end,:));
-    
+    ROI_Z{i_stim} = tsnormaveZ_roi;
 end
 figure(h1); supertitle('ROI time series: Intensity')
 saveas(h1,[storage descr '_ROI_TS_fMRI.svg']);
 saveas(h1,[storage descr '_ROI_TS_fMRI.fig']);
 
 figure(h2); title('RM1 Full Timeseries')
-saveas(h2,[storage descr '_RM1_Full_Timeseries_fMRI.svg']);
-saveas(h2,[storage descr '_RM1_Full_Timeseries_fMRI.fig']);
+saveas(h2,[storage descr '_' SingleROI '_Full_Timeseries_fMRI.svg']);
+saveas(h2,[storage descr '_' SingleROI '_Full_Timeseries_fMRI.fig']);
 
+
+%% ROI CIRCUIT Z SCORES
+
+roi_int = [];
+roi_int = [roi_int find(contains(fmriroi, 'RM1'))];
+roi_int = [roi_int find(contains(fmriroi, 'LM1'))];
+roi_int = [roi_int find(contains(fmriroi, 'RCPu'))];
+roi_int = [roi_int find(contains(fmriroi, 'LCPu'))];
+
+for i = 1:3
+    ROIZ(:,:,i) = cell2mat(ROI_Z{i});
+end
+
+
+f = figure(62);
+num_an = size(tsnorm_roi,2);
+for i_roi = 1:size(roi_int,2)
+    subplot(2,2,i_roi)
+    % Plot Z score for ROI
+    D = ROIZ(roi_int(i_roi),:,:);
+    D = reshape(D,[],1);
+    Dl = [repmat('1',num_an,1);...
+        repmat('2',num_an,1);...
+        repmat('3',num_an,1)];
+    boxplot(D,Dl);
+    set(gca,'xticklabel',{'0.1' '0.5' '1.0'},'ylim',[-10 35])
+    title(fmriroi{roi_int(i_roi)})
+end
+saveas(f,[storage descr '_ROI_CIRCUIT_Z.fig']);
+saveas(f,[storage descr '_ROI_CIRCUIT_Z.svg']);
+
+%% NOISE Z SCORES
 % PLOT NOISE ROI Z-SCORE INFO
 h27 = figure;
 subplot(2,1,1);

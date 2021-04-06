@@ -149,6 +149,7 @@ for i_stim = 1:size(stim,2)
                 
                 % z-score conversion
                 base = 1:20;
+                ts_roi{i_roi,i_mouse} = detrend(ts_roi{i_roi,i_mouse});
                 tmp = (ts_roi{i_roi,i_mouse} - mean(ts_roi{i_roi,i_mouse}(base)))/...
                     std(ts_roi{i_roi,i_mouse}(base));
                 for k = 1:size(start,2)
