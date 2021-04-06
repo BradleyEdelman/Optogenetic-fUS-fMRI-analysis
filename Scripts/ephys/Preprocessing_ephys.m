@@ -7,7 +7,8 @@ elseif ispc
     slash = '\';
 end
 cd(Dir)
-addpath(genpath([Dir 'Preprocessing' slash]));
+% addpath(genpath([Dir 'Preprocessing' slash]));
+addpath(genpath('C:\Users\bedelman\Documents\GitHub\ofUSI\'))
 storage = [Dir 'Data_Processed' slash 'ephys' slash]; if ~exist(storage,'dir'); mkdir(storage); end
 addpath(genpath(storage));
 raw = [Dir 'Ephys'];

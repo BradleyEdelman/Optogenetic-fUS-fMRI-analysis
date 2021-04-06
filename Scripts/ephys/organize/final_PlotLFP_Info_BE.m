@@ -209,7 +209,7 @@ supertitle('Mouse: Group Average')
 saveas(Ftot(1),[storage type '_Spectrogram_total_GROUP.svg']);
 save([storage type '_LFP_AMP_values_GROUP'],'LFP_region_GRP','LFP_region_GRP_mV','LFP_z_region_GRP','base_fold');
 
-
+% bar plot percent change
 figure; hold on
 ctrs = 1:4; hBar{1} = bar(ctrs, LFPAVE'); drawnow; clear ctr ydt
 for k1 = 1:size(LFPAVE',2)
@@ -222,6 +222,19 @@ hBar{2} = bar(ctrs, LFPAVE'); delete(hBar{1})
 set(gca,'ylim',[0 1e4],'xtick',[1 2 3 4],'xticklabel',t_bank);
 saveas(Famp,[storage type '_LPF_AMP_total_GROUP.svg']);
 
+% box plot percent change
+figure;
+for k2 = 1:4
+    subplot(2,2,k2)
+    D = [LFP_region_GRP{1}(:,k2);...
+        LFP_region_GRP{2}(:,k2);...
+        LFP_region_GRP{3}(:,k2)];
+    D1 = [repmat('1',4,1); repmat('2',4,1); repmat('3',4,1)];
+    boxplot(D, D1)
+    
+    title(t_bank{k2})
+    set(gca,'ylim',[0 1.5e4]);
+end
 
 
 
