@@ -243,7 +243,7 @@ fmriroi = {'LCPu' 'LS1Dz' 'LS1FL' 'LS1HL' 'LM1' 'LS2' 'LM2' 'LCg1' 'LCg2' 'LS1BF
 % roifolder = [storage(1:end-5) 'segment_ofUS' slash 'fmri_post_20200212' slash];
 % fmriroi = {'LCPu' 'LS1Dz' 'LS1FL' 'LS1HL' 'LM1' 'LS2' 'LM2' 'LCg1' 'LCg2' 'LS1BF'...
 %     'RCg1' 'RCg2' 'RM2' 'RM1' 'RCPu' 'RS1HL' 'RS1FL' 'RS1Dz' 'RS1BF' 'RS2'};
-% 
+
 % base_fold = {'20191108_083343_BEd_preCW_4346075_N_D5_1_47';
 %     '20191111_220250_BEd_preCW_4364123_R1_D2_2_1_57'; 
 %     '20191111_151047_BEd_preCW_4364122_N_D2_1_53';

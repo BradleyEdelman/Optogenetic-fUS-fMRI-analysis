@@ -182,10 +182,10 @@ for i_stim = 1:size(stim,2)
         'tsnormZ','tsnormaveZ','tsnormZ_roi','tsnormaveZ_roi','tsnormZ_noise','tsnormaveZ_noise',...
         'tsnorm_roi','tsnormave_roi','tsnormavepeak_roi','tsnormaveAUC_roi',...
         'tsnormave_noise','tsnormavepeak_noise','tsnormaveAUC_noise');
-    
+    cell2mat(tsnormaveZ_noise(end,:))
 end         
                 
-                
+x = 1;
                 
                 
                 

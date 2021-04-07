@@ -50,11 +50,14 @@ for i_stim = 1:size(stim,2)
                 ts2 = ts1 - mean(ts1(1:10));
                 
                 tmp = vertcat(tsnorm_roi{i_roi,:});
+                for i= 1:size(tmp,1)
+                    tmp(1,:) = detrend(tmp(1,:));
+                end
                 tmp = tmp - repmat(mean(mean(tmp,2),1),[size(tmp,1) size(tmp,2)]);
                 tmp = tmp - repmat(mean(mean(tmp(1:10)),1),[size(tmp,1) size(tmp,2)]); 
                 
                 stdshade(tmp,0.25,stimC(i_stim,:))
-                set(gca,'ylim',[-0.5 1])
+                set(gca,'ylim',[-2 2])
 %                 plot(ts,'color',stimC(i_stim,:),'linewidth',2)
             end
             
