@@ -271,8 +271,8 @@ set(gca,'ytick',1:size(fusroitmp,2),'yticklabel',fusroitmp(I),'xlim',[-1 2]);
 title('Beta Ratio')
 
 
-tfmri = load('D:\Data_Processed\fMRI\pre_regression.mat'); tfmri = tfmri.B_roi_int_sig;
-tfus = load('D:\Data_Processed\fUS\Thy1_regression.mat'); tfus = tfus.B_roi_int_sig;
+tfmri = load('D:\Data_Processed\fMRI\pre_regression.mat'); tfmri = tfmri.MINACT_roi_sig;%B_roi_int_sig;
+tfus = load('D:\Data_Processed\fUS\Thy1_regression.mat'); tfus = tfus.MINACT_roi_sig;%B_roi_int_sig;
 figure; hold on
 for i = 1:20 
     
@@ -300,19 +300,21 @@ set(gca,'ytick',1:size(fusroitmp,2),'yticklabel',fusroitmp(I));
 title('Intercept Ratio')
 
 % Pixel beta and intercept
-tfmri = load('D:\Data_Processed\fMRI\pre_regression.mat');
+tfmri = load('D:\Data_Processed\fMRI\pre_regression.mat'); 
 tfus = load('D:\Data_Processed\fUS\Thy1_regression.mat');
 
 figure;
 x = [tfmri.B_pix_sig(:); tfus.B_pix_sig(:)];
 g = [repmat({'fmri'},size(tfmri.B_pix_sig(:),1),1); repmat({'fusi'},size(tfus.B_pix_sig(:),1),1)];
-subplot(1,2,1); boxplot(x,g); title('Beta')
-[h,p] = ranksum(tfmri.B_pix_sig(:),tfus.B_pix_sig(:))
+subplot(1,2,1); boxplot(x,g); title('Beta'); set(gca,'ylim',[0 16])
+[p,h] = ranksum(tfmri.B_pix_sig(:),tfus.B_pix_sig(:))
 
-x = [tfmri.B_int_pix_sig(:); tfus.B_int_pix_sig(:)];
-g = [repmat({'fmri'},size(tfmri.B_int_pix_sig(:),1),1); repmat({'fusi'},size(tfus.B_int_pix_sig(:),1),1)];
-subplot(1,2,2); boxplot(x,g)  ; title('Int') 
-[h,p] = ranksum(tfmri.B_int_pix_sig(:),tfus.B_int_pix_sig(:))
+% x = [tfmri.B_int_pix_sig(:); tfus.B_int_pix_sig(:)];
+% g = [repmat({'fmri'},size(tfmri.B_int_pix_sig(:),1),1); repmat({'fusi'},size(tfus.B_int_pix_sig(:),1),1)];
+x = [tfmri.MINACT_pix_sig(:); tfus.MINACT_pix_sig(:)];
+g = [repmat({'fmri'},size(tfmri.MINACT_pix_sig(:),1),1); repmat({'fusi'},size(tfus.MINACT_pix_sig(:),1),1)];
+subplot(1,2,2); boxplot(x,g)  ; title('Int'); set(gca,'ylim',[-2 10])
+[p,h] = ranksum(tfmri.MINACT_pix_sig(:),tfus.MINACT_pix_sig(:))
 
 %%
 % SNR

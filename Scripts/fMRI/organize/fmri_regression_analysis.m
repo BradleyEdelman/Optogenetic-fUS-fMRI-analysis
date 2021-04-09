@@ -44,6 +44,7 @@ for i_roi = 1:20
     B_roi(i_roi) = B(2);
     Rsq_roi(i_roi) = STATS(1);
     P_roi(i_roi) = STATS(3);
+    MINACT(i_roi) = B_roi_int(i_roi)+B_roi(i_roi)*0.1;
     
     subplot(5,4,i_roi); cla; hold on
     set(gca,'xlim',[-.5 1.5],'ylim',[-2.5 15]);
@@ -62,34 +63,18 @@ for i_roi = 1:20
 end
 
 h2 = figure(2); clf
-subplot(1,4,1); imagesc(Rsq_roi'); title('Rsq ROI');
+subplot(1,5,1); imagesc(Rsq_roi'); title('Rsq ROI');
 set(gca,'ytick',1:20,'yticklabel',param.fmriroi,'xtick',[]); caxis([0 1]); colorbar
-subplot(1,4,2); imagesc(P_roi'); title('P-val ROI');
+subplot(1,5,2); imagesc(P_roi'); title('P-val ROI');
 set(gca,'ytick',1:20,'yticklabel',param.fmriroi,'xtick',[]); caxis([0 1]); colorbar
-subplot(1,4,3); imagesc(B_roi'); title('Beta ROI');
+subplot(1,5,3); imagesc(B_roi'); title('Beta ROI');
 set(gca,'ytick',1:20,'yticklabel',param.fmriroi,'xtick',[]); caxis([0 max(B_roi)]); colorbar
-subplot(1,4,4); imagesc(B_roi_int'); title('Int ROI');
+subplot(1,5,4); imagesc(B_roi_int'); title('Int ROI');
 set(gca,'ytick',1:20,'yticklabel',param.fmriroi,'xtick',[]); caxis([0 max(B_roi_int)]); colorbar
+subplot(1,5,5); imagesc(MINACT'); title('Model Predict 0.1mW');
+set(gca,'ytick',1:20,'yticklabel',param.fmriroi,'xtick',[]); caxis([0 max(MINACT)]); colorbar
 colormap jet
 supertitle('Intensity Regression: ROI')
-        
-
-for i_pix = 1:size(tval,1)
-    
-    T1 = [tval(i_pix,:,1) tval(i_pix,:,2) tval(i_pix,:,3)]';
-    T2 = [0.1*ones(size(base_fold,1),1);0.5*ones(size(base_fold,1),1);1.0*ones(size(base_fold,1),1)];
-
-    T2(isnan(T1)) = [];
-    T1(isnan(T1)) = [];
-
-    [B,BINT,R,RINT,STATS] = regress(T1,[ones(size(T2,1),1),T2]);
-    
-    B_pix_int(i_pix) = B(1);
-    B_pix(i_pix) = B(2);
-    Rsq_pix(i_pix) = STATS(1);
-    P_pix(i_pix) = STATS(3);
-    
-end
 
 % REGRESSION FOR EACH VOXEL
 for i_pix = 1:size(tval,1)
@@ -106,6 +91,7 @@ for i_pix = 1:size(tval,1)
     B_pix(i_pix) = B(2);
     Rsq_pix(i_pix) = STATS(1);
     P_pix(i_pix) = STATS(3);
+    MINACT_pix(i_pix) = B_pix_int(i_pix)+B_pix(i_pix)*0.1;
     
 end
 
@@ -135,6 +121,18 @@ subplot(1,3,2); histogram(B_int_pix_sig,'BinEdges',[-5:1:10],'Normalization','pr
 set(gca,'xlim',[-5 10],'ylim',[0 .5]); title('int')
 subplot(1,3,3); histogram(B_pix_sig,'BinEdges',[-5:1:10],'Normalization','probability');
 set(gca,'xlim',[-5 15],'ylim',[0 .25]); title('beta')
+supertitle('beta v intercept')
+
+% Plot all significant brain pixels (PREDICT 0.1 vs SLOPE)
+B_pix_sig = B_pix(cortex_pix); B_pix_sig = B_pix_sig(cortex_reg_act);
+MINACT_pix_sig = MINACT_pix(cortex_pix); MINACT_pix_sig = MINACT_pix_sig(cortex_reg_act);
+h6 = figure(89); subplot(1,3,1); scatter(MINACT_pix_sig,B_pix_sig,5,'b','filled');
+set(gca,'xlim',[-10 10],'ylim',[-5 20]); title('fusi')
+subplot(1,3,2); histogram(MINACT_pix_sig,'BinEdges',[-5:1:10],'Normalization','probability');
+set(gca,'xlim',[-5 10],'ylim',[0 .5]); title('int')
+subplot(1,3,3); histogram(B_pix_sig,'BinEdges',[-5:1:10],'Normalization','probability');
+set(gca,'xlim',[-5 15],'ylim',[0 .25]); title('beta')
+supertitle('beta vs model predict 0.1mW')
 
 % Plot all pixels in local region (M1)
 % h6 = figure(79);
@@ -194,6 +192,7 @@ for i = 1:20
         B_roi_sig(i) = B(2);
         Rsq_roi_sig(i) = STATS(1);
         P_roi_sig(i) = STATS(3);
+        MINACT_roi_sig(i) = B_roi_int_sig(i) + B_roi_sig(i)*0.1;
         count_roi_sig(i) = count;
         prop_roi_sig(i) = count/size(pts_roi,1);
         
@@ -203,6 +202,7 @@ for i = 1:20
         B_roi_sig(i) = 0;
         Rsq_roi_sig(i) = 0;
         P_roi_sig(i) = 1;
+        MINACT_roi_sig(i) = 0;
         count_roi_sig(i) = 0;
         prop_roi_sig(i) = 0;
         
@@ -211,12 +211,14 @@ end
 
 B_pix_int = reshape(B_pix_int,35,80); B_pix = reshape(B_pix,35,80);
 Rsq_pix = reshape(Rsq_pix,35,80); P_pix = reshape(P_pix,35,80);
+MINACT_pix = reshape(MINACT_pix,35,80);
 
 % rescale dynamic range of anat for vis
-maxR = max(Rsq_pix(:)); maxB = ceil(max(abs(B_pix(:)))); plotmin = -100; plotmax = 0; maxB = 15; maxB2 =8;
+maxR = max(Rsq_pix(:)); maxB = ceil(max(abs(B_pix(:)))); plotmin = -100; plotmax = 0; maxB = 15; maxB2 =8; maxB3 = 10;
 CbarR = [gray(abs(plotmax - plotmin)*100); fireice(2*maxR*100)]; CAXR = [plotmin - maxR maxR];
 CbarB = [gray(abs(plotmax - plotmin)*100); fireice(2*maxB*100)]; CAXB = [plotmin - maxB maxB];
 CbarB2 = [gray(abs(plotmax - plotmin)*100); fireice(2*maxB2*100)]; CAXB2 = [plotmin - maxB2 maxB2];
+CbarB3 = [gray(abs(plotmax - plotmin)*100); fireice(2*maxB3*100)]; CAXB3 = [plotmin - maxB3 maxB3];
 
 anat = load_nii(param.atmp); anat = anat.img(:,:,sliceidx);
 mask = load_nii(param.mtmp); mask = mask.img(:,:,sliceidx);
@@ -224,19 +226,23 @@ BB22 = imresize(B_pix_int,size(anat));
 BB2 = imresize(B_pix,size(anat));
 Rsq2 = imresize(Rsq_pix,size(anat));
 PP2 = imresize(P_pix,size(anat));
+MA2 = imresize(MINACT_pix, size(anat));
+
 anat = (anat - min(anat(:)))/(max(anat(:)) - min(anat(:)))*(plotmax - plotmin) + plotmin; 
 anatRR = anat - maxR; anatBB = anat - maxB; anatBB2 = anat - maxB2; anatPP = anat;
-BB22(mask == 0) = CAXB2(1); BB2(mask == 0) = CAXB(1); Rsq2(mask == 0) = CAXR(1); PP2(mask == 0) = 1;
+BB22(mask == 0) = CAXB2(1); BB2(mask == 0) = CAXB(1); Rsq2(mask == 0) = CAXR(1); PP2(mask == 0) = 1; MA2(mask == 0) = 0;
 
 h3 = figure(3); clf
-subplot(1,4,1); imagesc(Rsq2); title('Rsq pixel');
+subplot(1,5,1); imagesc(Rsq2); title('Rsq pixel');
 set(gca,'xtick',[],'ytick',[]); caxis([0 1]); colorbar
-subplot(1,4,2); imagesc(PP2); title('P-val pixel');
+subplot(1,5,2); imagesc(PP2); title('P-val pixel');
 set(gca,'xtick',[],'ytick',[]); caxis([0 .05]); colorbar
-subplot(1,4,3); imagesc(BB2); title('Beta pix');
+subplot(1,5,3); imagesc(BB2); title('Beta pix');
 set(gca,'xtick',[],'ytick',[]); caxis([0 maxB]); colorbar
-subplot(1,4,4); imagesc(BB22);title('Int pix');
+subplot(1,5,4); imagesc(BB22);title('Int pix');
 set(gca,'xtick',[],'ytick',[]); caxis([0 maxB2]); colorbar
+subplot(1,5,5); imagesc(MA2); title('model 0.1mW');
+set(gca,'xtick',[],'ytick',[]); caxis([0 maxB3]); colorbar
 colormap jet
 supertitle('Intensity Regression: Pixel')
 
@@ -260,7 +266,7 @@ saveas(h6,[storage descr '_Intensity_Regression_ROI_sig_pix_fUSI.fig']);
 
 save_file = [storage descr '_regression.mat'];
 fprintf('\nSaving: %s\n', save_file);
-save(save_file,'B_roi_int','B_roi','Rsq_roi','P_roi','B_pix_int','B_pix','Rsq_pix','P_pix',...
+save(save_file,'MINACT', 'MINACT_pix', 'MINACT_pix_sig', 'MINACT_roi_sig', 'Rsq_roi','P_roi','B_pix_int','B_pix','Rsq_pix','P_pix',...
     'cortex_prop_reg_sig','cortex_prop_glm_sig','B_pix_sig','B_int_pix_sig','B_roi_int_sig',...
     'B_roi_sig','Rsq_roi_sig','P_roi_sig','count_roi_sig','prop_roi_sig')
 
