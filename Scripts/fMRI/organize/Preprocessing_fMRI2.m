@@ -220,17 +220,18 @@ roifolder = [storage(1:end-5) 'segment_ofUS' slash 'fmri_pre_20191205' slash];
 fmriroi = {'LCPu' 'LS1Dz' 'LS1FL' 'LS1HL' 'LM1' 'LS2' 'LM2' 'LCg1' 'LCg2' 'LS1BF'...
     'RCg1' 'RCg2' 'RM2' 'RM1' 'RCPu' 'RS1HL' 'RS1FL' 'RS1Dz' 'RS1BF' 'RS2'};
 
-% base_fold = {'20191122_095408_BEd_postCW_4346075_N_1_1';
+base_fold = {'20191122_143826_BEd_postCW_4364124_L1_1_3';
 %     '20191122_123846_BEd_postCW_4364143_N_1_2';
 % %     '20191122_143826_BEd_postCW_4364124_L1_1_3';
+%     '20191122_095408_BEd_postCW_4346075_N_1_1'
 %     '20191124_191348_BEd_postCW_4364122_N_1_4';
 %     '20191124_204714_BEd_postCW_4364123_R1_1_5';
-%     }; param.sliceidx = 10; param.maxt = 40; param.descr = 'single';
-% atmp = [storage '20191108' slash 'BEd_preCW_4346075_N_D5_1_47' slash '16a' slash 'ave_anatomy.nii'];
-% mtmp = [storage '20191108' slash 'BEd_preCW_4346075_N_D5_1_47' slash '16a' slash 'ave_anatomy_mask.nii'];
-% roifolder = [storage(1:end-5) 'segment_ofUS' slash 'fmri_pre_20191205' slash];
-% fmriroi = {'LCPu' 'LS1Dz' 'LS1FL' 'LS1HL' 'LM1' 'LS2' 'LM2' 'LCg1' 'LCg2' 'LS1BF'...
-%     'RCg1' 'RCg2' 'RM2' 'RM1' 'RCPu' 'RS1HL' 'RS1FL' 'RS1Dz' 'RS1BF' 'RS2'};
+    }; param.sliceidx = 10; param.maxt = 40; param.descr = 'single';
+atmp = [storage '20191108' slash 'BEd_preCW_4346075_N_D5_1_47' slash '16a' slash 'ave_anatomy.nii'];
+mtmp = [storage '20191108' slash 'BEd_preCW_4346075_N_D5_1_47' slash '16a' slash 'ave_anatomy_mask.nii'];
+roifolder = [storage(1:end-5) 'segment_ofUS' slash 'fmri_pre_20191205' slash];
+fmriroi = {'LCPu' 'LS1Dz' 'LS1FL' 'LS1HL' 'LM1' 'LS2' 'LM2' 'LCg1' 'LCg2' 'LS1BF'...
+    'RCg1' 'RCg2' 'RM2' 'RM1' 'RCPu' 'RS1HL' 'RS1FL' 'RS1Dz' 'RS1BF' 'RS2'};
 
 % base_fold = {'20191122_095408_BEd_postCW_4346075_N_1_1';
 %     '20191122_123846_BEd_postCW_4364143_N_1_2';
@@ -268,7 +269,7 @@ fmriroi = {'LCPu' 'LS1Dz' 'LS1FL' 'LS1HL' 'LM1' 'LS2' 'LM2' 'LCg1' 'LCg2' 'LS1BF
 param.order = 4; %GLM gamma
 param.template = 1; % User study brain template; must have template for group level
 param.Dummy = 10; %# TRs
-param.Pthresh = 0.005;
+param.Pthresh = 0.1;
 param.fmriroi = fmriroi;
 param.atmp = atmp;
 param.mtmp = mtmp;
@@ -284,10 +285,12 @@ fmri_active_voxel_count(storage,base_fold,slash,param)
 fmri_group_fixed_effects(storage,base_fold,slash,param)
 % Plot group activation maps
 fmri_plot_group_fixed_effects(storage,base_fold,slash,param)
+%%
 % Extract time series for roi and vascular components thereof
 fmri_timeseries_analysis(storage,base_fold,slash,param)
 % Plot time series info
 fmri_plot_timeseries_analysis(storage,base_fold,slash,param)
+%%
 % Plot ROI activation (percent, t-stat)
 fmri_plot_ROI_info(storage,base_fold,slash,param)
 % Regression Analysis on time series info

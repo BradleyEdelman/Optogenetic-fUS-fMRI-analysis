@@ -29,7 +29,7 @@ StatAUC(2:1+size(base_fold,1)*3,5) = num2cell(repmat([1;2;3],size(base_fold,1),1
 StatAUC(2+size(base_fold,1)*3:1+size(base_fold,1)*6,5) = num2cell(repmat([4;5;6],size(base_fold,1),1));
 StatPk = StatAUC; StatCt = StatAUC;
 
-SingleROI = 'LCPu';
+SingleROI = 'RM1';
 for i_stim = 1:size(stim,2)
     
     stim_storage = [storage stim{i_stim} slash descr slash];
