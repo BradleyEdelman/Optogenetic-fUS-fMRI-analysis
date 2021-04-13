@@ -120,7 +120,7 @@ set(gca,'position',[.13 .1 .775 .65],'xticklabel',[],'yticklabel',[1 size(X,1)],
 ylabel('Acq Number');
 colormap gray
 
-Pthresh = 0.001; maxt = 15;
+Pthresh = 0.005; maxt = 20;
 
 plotmin = -100; plotmax = 0;
 Cbar = [gray(abs(plotmax - plotmin)*100); fireice(2*maxt*100)]; CAX = [plotmin - maxt maxt];

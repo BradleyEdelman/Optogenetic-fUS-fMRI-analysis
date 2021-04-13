@@ -97,7 +97,7 @@ for i = 1:size(base_fold,1)
     param.smooth = 2.5; % um *100
     param.Dummy = 10; %# TRs
     param.order = 4; %GLM gamma
-    param.template = 1; % User study brain template
+    param.template = 0; % User study brain template
 
     if isequal(SNR,1) % Average runs for higher SNR
 
@@ -142,16 +142,16 @@ for i = 1:size(base_fold,1)
                 cd(snr_fold)
             end
             
-            SNR_func_file = [func_fold 'csnr' func_file];
-            if exist(SNR_func_file,'file')
-                nii = load_untouch_nii(SNR_func_file);
-            else
-                fMRI_do_preprocess_snr(func_fold,func_file,snrnii,anat_fold,param);
-                nii = load_untouch_nii(SNR_func_file);
-            end
-            [S{i},T{i},R{i}] = compute_snr(nii.img);
-            
-%             Func = fMRI_do_preprocess(func_fold,func_file,snrnii,anat_fold,param);
+%             SNR_func_file = [func_fold 'csnr' func_file];
+%             if exist(SNR_func_file,'file')
+%                 nii = load_untouch_nii(SNR_func_file);
+%             else
+%                 fMRI_do_preprocess_snr(func_fold,func_file,snrnii,anat_fold,param);
+%                 nii = load_untouch_nii(SNR_func_file);
+%             end
+%             [S{i},T{i},R{i}] = compute_snr(nii.img);
+%             
+            Func = fMRI_do_preprocess(func_fold,func_file,snrnii,anat_fold,param);
             
         end
 
