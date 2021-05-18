@@ -32,7 +32,7 @@ end
 
 V = f*1540/(2*15e6)*1000;
 
-% global norm makes better visualization 
+
 MaxI = max(I_neg,I_pos);
 I_neg_norm = 10*log10(I_neg./max(max(MaxI)));
 I_pos_norm = 10*log10(I_pos./max(max(MaxI)));
@@ -65,7 +65,6 @@ I_pos2 = imresize(I_pos_norm,1);
 for  i = 1:size(I_neg2,1)
     for j =1:size(I_neg2,2)
         
-        % plot dominant flow direction and keep intensity value
         if I_neg2(i,j) > I_pos2(i,j)
             tmp(i,j) = min(I_neg2(:)) - I_neg2(i,j);
         else
@@ -92,6 +91,12 @@ subplot(2,3,6); imagesc(to3);
 set(gca,'colormap', CAX); caxis([0 1]); title('to trans: signed')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% figure; imagesc(imresize(tmp,1)); caxis([-30 30])
+% colormap([flipud(Red);flipud(Blue)])
+
+% I_neg = 10*log10(I_neg./max(max(I_neg)));
+% I_pos = 10*log10(I_pos./max(max(I_pos)));
+
 figure;
 subplot(2,2,1); imagesc(pdi); title('I total'); set(gca,'yticklabel',[],'xticklabel',[]); colormap(gca,'gray'); caxis([-30 0])
 subplot(2,2,2); imagesc(I_pos_norm); title('I Positive'); set(gca,'yticklabel',[],'xticklabel',[]); colormap(gca,'gray'); caxis([-30 0])
@@ -102,6 +107,25 @@ flow.veloc = veloc;
 flow.I_neg = I_neg;
 flow.I_pos = I_pos;
 flow.signed = tmp;
+
+
+%%
+tmp2 = tmp;
+tmp2(tmp2 > -4) = 0;
+tmp2 = medfilt2(tmp2,[2 2]);
+Red = ([linspace(.75,1,600)' linspace(0,1,600)' linspace(0,1,600)']);
+figure; imagesc(-tmp2); colormap(flipud(Red));
+caxis([0 15])
+
+tmp2 = tmp;
+tmp2(tmp2 < 4) = 0;
+tmp2 = medfilt2(tmp2,[2 2]);
+Blue = ([linspace(1,0,600)' linspace(1,0,600)' linspace(1,.75,600)']);
+figure; imagesc(tmp2); colormap(Blue)
+caxis([0 15])
+        
+figure; imagesc(zeros(2,2));
+colormap([Red;Blue])
         
         
         

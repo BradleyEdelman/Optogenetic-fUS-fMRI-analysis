@@ -36,7 +36,7 @@ if isfield(Data,'frame_001') % High resolution anatomical
 %     end
 %     clear Data
 %     p.method = 'nosvd';
-%    
+
 elseif isfield(Data,'Data') % low resolution functional
     
     Data = Data.Data;

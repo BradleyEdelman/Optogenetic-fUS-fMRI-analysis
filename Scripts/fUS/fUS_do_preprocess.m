@@ -14,7 +14,7 @@ if isequal(preproc,1)
     % Clutter Filter
     if isstruct(func_data)
         funcFile = [func_data.folder slash func_data.name];
-        [fdata,fpdi,fpsd] = Clutterfilt_preproc(funcFile,'method','nosvd','filtcutoff',30);
+        [fdata,fpdi,fpsd] = Clutterfilt_preproc(funcFile,'method','svd','filtcutoff',20);
     else
         fdata = [];
         fpdi = func_data;

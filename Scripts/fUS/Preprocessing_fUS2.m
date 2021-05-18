@@ -95,7 +95,7 @@ for i = 1:size(base_fold,1)
                 snridx = find(snridx == 1);
                 for l = 1%:size(snridx,2)
                     snr_file = [dataFold func_opt{snridx(l)}];
-                    [fdata{l},fpdi(:,:,:,l),fpsd(:,:,l)] = Clutterfilt_preproc(snr_file,'method','nosvd','filtcutoff',30);
+                    [fdata{l},fpdi(:,:,:,l),fpsd(:,:,l)] = Clutterfilt_preproc(snr_file,'method','nosvd','filtcutoff',20);
                 end
 
                 cd(snr_fold)
