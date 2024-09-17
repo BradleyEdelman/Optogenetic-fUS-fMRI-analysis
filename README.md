@@ -1,6 +1,6 @@
 # Optogenetic fUS and fMRI
 
-Analysis code for ofUSI and ofMRI data from Stanford University
+Preprocessing code and general linear modeling for functional ultrasound and functional MRI in response to optogenetic stimulation of M1 in anesthetized mice
 
 Used for the following publication:
 
