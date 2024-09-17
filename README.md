@@ -1,4 +1,5 @@
-# ofUSI
+# Optogenetic fUS and fMRI
+
 Analysis code for ofUSI and ofMRI data from Stanford University
 
 Used for the following publication:
